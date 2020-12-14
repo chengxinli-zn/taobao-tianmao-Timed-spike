@@ -6,6 +6,8 @@ import asyncio
 from pyppeteer import launch
 
 width, height = 1200, 768
+BEFORE_SECOND = 2  # 提前2秒开始循环点击
+CLICK_FREQUENCY = 0.3  # 点击频率
 
 
 async def main(number, url, buy_time):
@@ -22,15 +24,16 @@ async def main(number, url, buy_time):
     print('请30秒内完成登陆')
     await asyncio.sleep(30)
 
-    await page.goto(url)
     buy_time = datetime.datetime.strptime(
         buy_time, '%Y-%m-%d %H:%M:%S')
-    # 等待时间开始抢购
+    # 如果开抢时间大于当前时间，time.sleep(), 否则直接开抢
     wait_second = (buy_time - datetime.datetime.now()).seconds if \
         (buy_time - datetime.datetime.now()).days >= 0 else 0
     print('距离时间还有{}秒'.format(wait_second))
+    if wait_second - BEFORE_SECOND > 0:
+        await asyncio.sleep(wait_second)
 
-    await asyncio.sleep(wait_second)
+    await page.goto(url)
 
     while True:
         try:
@@ -38,14 +41,14 @@ async def main(number, url, buy_time):
             await page.click('.tb-btn-buy')
             break
         except:
-            time.sleep(0.3)
+            await asyncio.sleep(CLICK_FREQUENCY)
     while True:
         try:
             # 找到“提交订单”，点击
             await page.click('.go-btn')
             break
         except:
-            time.sleep(0.3)
+            await asyncio.sleep(CLICK_FREQUENCY)
 
     await asyncio.sleep(10)
     await browser.close()
