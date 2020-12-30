@@ -16,6 +16,7 @@ async def main(number, url, buy_time):
         args=['--disable-infobars', f'--window-size={width},{height}'])
     content = await browser.createIncognitoBrowserContext()
     page = await content.newPage()
+    await page.setViewport({'width': width, 'height': height})
 
     if str(number) == '1':
         await page.goto('https://login.taobao.com/')
