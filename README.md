@@ -19,5 +19,7 @@ pyppeteer-install
 6.  默认提前2秒开始无限刷新，间隔0.3秒，可自行修改参数（BEFORE_SECOND， CLICK_FREQUENCY）
 
 
+小米商城：
+python xiaomi.py
 
 
